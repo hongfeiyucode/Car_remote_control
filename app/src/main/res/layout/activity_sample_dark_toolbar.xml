@@ -26,5 +26,14 @@
             android:layout_height="wrap_content"
             android:text="Test"
             android:textSize="16sp" />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|bottom"
+            android:layout_margin="16dp"
+            android:src="@android:drawable/ic_dialog_email" />
     </FrameLayout>
+
 </RelativeLayout>

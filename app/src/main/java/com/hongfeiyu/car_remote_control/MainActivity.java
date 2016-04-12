@@ -2,6 +2,8 @@ package com.hongfeiyu.car_remote_control;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -52,10 +54,20 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+            }
+        });
+
+
         // Create a few sample profile
         // NOTE you have to define the loader logic too. See the CustomApplication for more details
-        final IProfile profile = new ProfileDrawerItem().withName("红绯鱼").withEmail("联系我").withIcon("http://7xq13x.com1.z0.glb.clouddn.com/conan.png");
-        //final IProfile profile2 = new ProfileDrawerItem().withName("红绯鱼").withEmail("联系我").withIcon("@drawable/conan");
+        final IProfile profile = new ProfileDrawerItem().withName("小车遥控器").withEmail("一言不合,开始飙车!").withIcon("http://7xq13x.com1.z0.glb.clouddn.com/conan.png");
+        final IProfile profile2 = new ProfileDrawerItem().withName("红绯鱼").withEmail("联系作者").withIcon("http://7xq13x.com1.z0.glb.clouddn.com/conan.png");
 
         // Create the AccountHeader
         headerResult = new AccountHeaderBuilder()
@@ -63,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
                 .withTranslucentStatusBar(true)
                 .withHeaderBackground(R.drawable.header)
                 .addProfiles(
-                        profile//, profile2
+                        profile, profile2
                 )
                 .withSavedInstance(savedInstanceState)
                 .build();
@@ -79,23 +91,47 @@ public class MainActivity extends AppCompatActivity {
                 .withGenerateMiniDrawer(true)
                 .withAccountHeader(headerResult) //set the AccountHeader we created earlier for the header
                 .addDrawerItems(
-                        new PrimaryDrawerItem().withName(R.string.drawer_item_first).withIcon(MaterialDesignIconic.Icon.gmi_3d_rotation).withIdentifier(1),
-                        new PrimaryDrawerItem().withName(R.string.drawer_item_second).withIcon(FontAwesome.Icon.faw_home).withIdentifier(2),
+                        new PrimaryDrawerItem().withName(R.string.drawer_item_first).withIcon(FontAwesome.Icon.faw_home).withIdentifier(1),
+                        new PrimaryDrawerItem().withName(R.string.drawer_item_second).withIcon(MaterialDesignIconic.Icon.gmi_car).withIdentifier(2),
                         new PrimaryDrawerItem().withName(R.string.drawer_item_third).withIcon(FontAwesome.Icon.faw_gamepad).withIdentifier(3),
                         new PrimaryDrawerItem().withName(R.string.drawer_item_fourth).withIcon(FontAwesome.Icon.faw_eye).withIdentifier(4),
                         new PrimaryDrawerItem().withName(R.string.drawer_item_fifth).withDescription("A more complex sample").withIcon(MaterialDesignIconic.Icon.gmi_adb).withIdentifier(5),
-                        new PrimaryDrawerItem().withName(R.string.drawer_item_sixth).withIcon(MaterialDesignIconic.Icon.gmi_car).withIdentifier(6),
+                        new PrimaryDrawerItem().withName(R.string.drawer_item_sixth).withIcon(MaterialDesignIconic.Icon.gmi_3d_rotation).withIdentifier(6),
                         new DividerDrawerItem(),
                         new SecondaryDrawerItem().withName(R.string.drawer_item_seventh).withIcon(FontAwesome.Icon.faw_github).withIdentifier(7).withSelectable(false)
                 ) // add the items we want to use with our Drawer
                 .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
                     @Override
                     public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
+                        if (drawerItem.getIdentifier() == 1) {
+                            Toast.makeText(MainActivity.this, ((Nameable) drawerItem).getName().getText(MainActivity.this), Toast.LENGTH_SHORT).show();
+
+                        }else
+                        if (drawerItem.getIdentifier() == 2) {
+                            Toast.makeText(MainActivity.this, ((Nameable) drawerItem).getName().getText(MainActivity.this), Toast.LENGTH_SHORT).show();
+
+                        }else
+                        if (drawerItem.getIdentifier() == 3) {
+                            Toast.makeText(MainActivity.this, ((Nameable) drawerItem).getName().getText(MainActivity.this), Toast.LENGTH_SHORT).show();
+
+                        }else
+                        if (drawerItem.getIdentifier() == 4) {
+                            Toast.makeText(MainActivity.this, ((Nameable) drawerItem).getName().getText(MainActivity.this), Toast.LENGTH_SHORT).show();
+
+                        }else
+                        if (drawerItem.getIdentifier() == 5) {
+                            Toast.makeText(MainActivity.this, ((Nameable) drawerItem).getName().getText(MainActivity.this), Toast.LENGTH_SHORT).show();
+
+                        }else
+                        if (drawerItem.getIdentifier() == 6) {
+                            Toast.makeText(MainActivity.this, ((Nameable) drawerItem).getName().getText(MainActivity.this), Toast.LENGTH_SHORT).show();
+
+                        }else
                         if (drawerItem.getIdentifier() == 7) {
-                            new LibsBuilder()
-                                    .withFields(R.string.class.getFields())
-                                    .withActivityStyle(Libs.ActivityStyle.DARK)
-                                    .start(MainActivity.this);
+//                            new LibsBuilder()
+//                                    .withFields(R.string.class.getFields())
+//                                    .withActivityStyle(Libs.ActivityStyle.DARK)
+//                                    .start(MainActivity.this);
                         } else {
                             if (drawerItem instanceof Nameable) {
                                 Toast.makeText(MainActivity.this, ((Nameable) drawerItem).getName().getText(MainActivity.this), Toast.LENGTH_SHORT).show();

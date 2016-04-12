@@ -1,12 +1,12 @@
 <resources>
-    <string name="app_name">远程控制小车</string>
-    <string name="app_name2">遥控器</string>
+    <string name="app_name">小车遥控器</string>
+    <string name="app_name2">STM32小车遥控器</string>
 
     <!-- Sample menu -->
     <string name="action_toggle">Toggle Side Panel</string>
 
     <!-- Drawer Items -->
-    <string name="drawer_item_first">First item</string>
+    <string name="drawer_item_first">Home</string>
     <string name="drawer_item_second">Second item</string>
     <string name="drawer_item_third">Third item</string>
     <string name="drawer_item_fourth">Fourth item</string>
