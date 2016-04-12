@@ -1,14 +1,28 @@
 package com.hongfeiyu.car_remote_control;
 
+import android.app.Activity;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.mikepenz.aboutlibraries.Libs;
@@ -42,6 +56,42 @@ public class MainActivity extends AppCompatActivity {
     private MiniDrawer miniResult = null;
     private CrossfadeDrawerLayout crossfadeDrawerLayout = null;
 
+    //bluetooth
+    public static final int MESSAGE_STATE_CHANGE = 1;
+    public static final int MESSAGE_READ = 2;
+    public static final int MESSAGE_WRITE = 3;
+    public static final int MESSAGE_DEVICE_NAME = 4;
+    public static final int MESSAGE_TOAST = 5;
+
+    public static final String DEVICE_NAME = "device_name";
+    public static final String TOAST = "toast";
+
+    public static final byte[] out = {'t'};
+    public static char direction = 'w';
+
+    private static final int REQUEST_CONNECT_DEVICE = 1;
+    private static final int REQUEST_ENABLE_BT = 2;
+
+    private TextView mTitle;
+    private ListView mConversationView;
+    private EditText mOutEditText;
+    private Button mSendButton;
+
+    private Button up_button;
+    private Button left_button;
+    private Button down_button;
+    private Button right_button;
+    private Button stop_button;
+    private Button fire_button;
+    private Button random_button;
+
+    private String mConnectedDeviceName = null;
+    private ArrayAdapter<String> mConversationArrayAdapter;
+    private StringBuffer mOutStringBuffer;
+    private BluetoothAdapter mBluetoothAdapter = null;
+    private BluetoothChatService mChatService = null;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,12 +104,24 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        //Bluetooth
+        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+
+        if (mBluetoothAdapter == null)
+        {
+            Toast.makeText(this, "��ǰ�ֻ���֧������.",
+                    Toast.LENGTH_LONG).show();
+            finish();
+            return;
+        }
+
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+//                        .setAction("Action", null).show();
+                remote_ctrl();
             }
         });
 
@@ -91,41 +153,62 @@ public class MainActivity extends AppCompatActivity {
                 .withGenerateMiniDrawer(true)
                 .withAccountHeader(headerResult) //set the AccountHeader we created earlier for the header
                 .addDrawerItems(
-                        new PrimaryDrawerItem().withName(R.string.drawer_item_first).withIcon(FontAwesome.Icon.faw_home).withIdentifier(1),
-                        new PrimaryDrawerItem().withName(R.string.drawer_item_second).withIcon(MaterialDesignIconic.Icon.gmi_car).withIdentifier(2),
+                        new PrimaryDrawerItem().withName(R.string.drawer_item_first).withIcon(MaterialDesignIconic.Icon.gmi_car).withIdentifier(1),
+                        new PrimaryDrawerItem().withName(R.string.drawer_item_second).withIcon(MaterialDesignIconic.Icon.gmi_directions_run).withIdentifier(2),
                         new PrimaryDrawerItem().withName(R.string.drawer_item_third).withIcon(FontAwesome.Icon.faw_gamepad).withIdentifier(3),
-                        new PrimaryDrawerItem().withName(R.string.drawer_item_fourth).withIcon(FontAwesome.Icon.faw_eye).withIdentifier(4),
-                        new PrimaryDrawerItem().withName(R.string.drawer_item_fifth).withDescription("A more complex sample").withIcon(MaterialDesignIconic.Icon.gmi_adb).withIdentifier(5),
-                        new PrimaryDrawerItem().withName(R.string.drawer_item_sixth).withIcon(MaterialDesignIconic.Icon.gmi_3d_rotation).withIdentifier(6),
+                        new PrimaryDrawerItem().withName(R.string.drawer_item_fourth).withIcon(MaterialDesignIconic.Icon.gmi_airplane).withIdentifier(4),
+                        new PrimaryDrawerItem().withName(R.string.drawer_item_fifth).withDescription("搜索附近设备前请打开手机的蓝牙").withIcon(MaterialDesignIconic.Icon.gmi_search).withIdentifier(5),
+                        new PrimaryDrawerItem().withName(R.string.drawer_item_sixth).withIcon(FontAwesome.Icon.faw_eye).withIdentifier(6),
                         new DividerDrawerItem(),
                         new SecondaryDrawerItem().withName(R.string.drawer_item_seventh).withIcon(FontAwesome.Icon.faw_github).withIdentifier(7).withSelectable(false)
                 ) // add the items we want to use with our Drawer
                 .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
                     @Override
                     public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
+
+                        up_button = (Button) findViewById(R.id.button_up);
+                        up_button.setEnabled(false);
+                        down_button = (Button) findViewById(R.id.button_down);
+                        down_button.setEnabled(false);
+                        right_button = (Button) findViewById(R.id.button_right);
+                        right_button.setEnabled(false);
+                        left_button = (Button) findViewById(R.id.button_left);
+                        left_button.setEnabled(false);
+                        stop_button = (Button) findViewById(R.id.button_stop);
+                        stop_button.setEnabled(false);
+                        fire_button = (Button) findViewById(R.id.button_fire);
+                        fire_button.setEnabled(false);
+
                         if (drawerItem.getIdentifier() == 1) {
                             Toast.makeText(MainActivity.this, ((Nameable) drawerItem).getName().getText(MainActivity.this), Toast.LENGTH_SHORT).show();
-
+                            remote_ctrl();
+                            return true;
                         }else
                         if (drawerItem.getIdentifier() == 2) {
                             Toast.makeText(MainActivity.this, ((Nameable) drawerItem).getName().getText(MainActivity.this), Toast.LENGTH_SHORT).show();
-
+                            auto_ctrl_1m();
+                            return true;
                         }else
                         if (drawerItem.getIdentifier() == 3) {
                             Toast.makeText(MainActivity.this, ((Nameable) drawerItem).getName().getText(MainActivity.this), Toast.LENGTH_SHORT).show();
-
+                            auto_ctrl_3m();
+                            return true;
                         }else
                         if (drawerItem.getIdentifier() == 4) {
                             Toast.makeText(MainActivity.this, ((Nameable) drawerItem).getName().getText(MainActivity.this), Toast.LENGTH_SHORT).show();
-
+                            auto_avoid_obstacle();
+                            return true;
                         }else
                         if (drawerItem.getIdentifier() == 5) {
                             Toast.makeText(MainActivity.this, ((Nameable) drawerItem).getName().getText(MainActivity.this), Toast.LENGTH_SHORT).show();
-
+                            Intent serverIntent = new Intent(MainActivity.this, DeviceListActivity.class);
+                            startActivityForResult(serverIntent, REQUEST_CONNECT_DEVICE);
+                            return true;
                         }else
                         if (drawerItem.getIdentifier() == 6) {
                             Toast.makeText(MainActivity.this, ((Nameable) drawerItem).getName().getText(MainActivity.this), Toast.LENGTH_SHORT).show();
-
+                            ensureDiscoverable();
+                            return true;
                         }else
                         if (drawerItem.getIdentifier() == 7) {
 //                            new LibsBuilder()
@@ -203,6 +286,390 @@ public class MainActivity extends AppCompatActivity {
             result.closeDrawer();
         } else {
             super.onBackPressed();
+        }
+    }
+
+
+    //bluetooth
+
+    @Override
+    public void onStart()
+    {
+        super.onStart();
+
+        if (!mBluetoothAdapter.isEnabled())
+        {
+            //Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            //startActivityForResult(enableIntent, REQUEST_ENABLE_BT);
+        }
+        else
+        {
+            if (mChatService == null)
+                setupChat();
+        }
+    }
+
+    public void onClick_Enable_Bluetooth(View view)
+    {
+        //������
+        if (!mBluetoothAdapter.isEnabled())
+        {
+            Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            startActivityForResult(enableIntent, REQUEST_ENABLE_BT);
+        }
+    }
+
+    public void onClick_Disable_Bluetooth(View view)
+    {
+        //�ر�����
+        mBluetoothAdapter.disable();
+    }
+
+
+    @Override
+    public synchronized void onResume()
+    {
+        super.onResume();
+
+        if (mChatService != null)
+        {
+            if (mChatService.getState() == BluetoothChatService.STATE_NONE)
+            {
+                mChatService.start();
+            }
+        }
+    }
+
+    private void setupChat()
+    {
+
+
+        mConversationArrayAdapter = new ArrayAdapter<String>(this,R.layout.message);
+        mConversationView = (ListView) findViewById(R.id.in);
+        mConversationView.setAdapter(mConversationArrayAdapter);
+
+        mOutEditText = (EditText) findViewById(R.id.edit_text_out);//�ı��༭��
+        mOutEditText.setOnEditorActionListener(mWriteListener);
+
+        mSendButton = (Button) findViewById(R.id.button_send);//���Ͱ�ť
+        mSendButton.setOnClickListener(new View.OnClickListener()
+        {
+            public void onClick(View v)
+            {
+                TextView view = (TextView) findViewById(R.id.edit_text_out);
+                String message = view.getText().toString();
+                sendMessage(message);
+            }
+        });
+
+        up_button = (Button) findViewById(R.id.button_up);//���Ͱ�ť
+        up_button.setOnClickListener(new View.OnClickListener()
+        {
+            public void onClick(View v)
+            {
+                out[0] = 'w';
+                direction = 'w';
+                sendCommand(out);
+            }
+        });
+
+        down_button = (Button) findViewById(R.id.button_down);//���Ͱ�ť
+        down_button.setOnClickListener(new View.OnClickListener()
+        {
+            public void onClick(View v)
+            {
+                out[0] = 's';
+                direction = 's';
+                sendCommand(out);
+            }
+        });
+
+        left_button = (Button) findViewById(R.id.button_left);//���Ͱ�ť
+        left_button.setOnTouchListener(new View.OnTouchListener() {
+            public boolean onTouch(View v, MotionEvent event) {
+                // TODO Auto-generated method stub
+                switch(event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        out[0] = 'a';
+                        sendCommand(out);
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        if (direction == 's')
+                            out[0] = 's';
+                        else
+                            out[0] = 'w';
+                        sendCommand(out);
+                        break;
+                    default:
+                        break;
+                }
+
+                return true;
+            }
+        });
+
+
+        right_button = (Button) findViewById(R.id.button_right);//���Ͱ�ť
+
+        right_button.setOnTouchListener(new View.OnTouchListener() {
+            public boolean onTouch(View v, MotionEvent event) {
+                // TODO Auto-generated method stub
+                switch(event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        out[0] = 'd';
+                        sendCommand(out);
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        if (direction == 's')
+                            out[0] = 's';
+                        else
+                            out[0] = 'w';
+                        sendCommand(out);
+                        break;
+                    default:
+                        break;
+                }
+
+                return true;
+            }
+        });
+
+        stop_button = (Button) findViewById(R.id.button_stop);//���Ͱ�ť
+        stop_button.setOnClickListener(new View.OnClickListener()
+        {
+            public void onClick(View v)
+            {
+                sendCommand(out);
+                out[0] = 't';
+                sendCommand(out);
+            }
+        });
+
+        fire_button = (Button) findViewById(R.id.button_fire);//���Ͱ�ť
+        fire_button.setOnClickListener(new View.OnClickListener()
+        {
+            public void onClick(View v)
+            {
+                out[0] = 'f';
+                sendCommand(out);
+            }
+        });
+
+        random_button = (Button) findViewById(R.id.button_random);//�����������ť
+        random_button.setOnClickListener(new View.OnClickListener()
+        {
+            public void onClick(View v)
+            {
+                out[0] = String.valueOf(Math.random()*7 + 1).getBytes()[0];
+                sendCommand(out);
+            }
+        });
+
+        mChatService = new BluetoothChatService(this, mHandler);
+
+        mOutStringBuffer = new StringBuffer("");
+    }
+
+    @Override
+    public synchronized void onPause()
+    {
+        super.onPause();
+    }
+
+    @Override
+    public void onStop()
+    {
+        super.onStop();
+    }
+
+    @Override
+    public void onDestroy()
+    {
+        super.onDestroy();
+        if (mChatService != null)
+            mChatService.stop();
+    }
+    //�ɱ�����
+    private void ensureDiscoverable()
+    {
+        if (mBluetoothAdapter.getScanMode() != BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE)
+        {
+            Intent discoverableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
+            discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
+            startActivity(discoverableIntent);
+        }
+    }
+    //������Ϣ
+    private void sendMessage(String message)
+    {
+        if (mChatService.getState() != BluetoothChatService.STATE_CONNECTED)
+        {
+            Toast.makeText(this, R.string.not_connected, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (message.length() > 0)
+        {
+            byte[] send = message.getBytes();
+            mChatService.write(send);
+            mOutStringBuffer.setLength(0);
+            mOutEditText.setText(mOutStringBuffer);
+        }
+    }
+
+    //������Ϣ
+    private void sendCommand(byte[] out)
+    {
+        if (mChatService.getState() != BluetoothChatService.STATE_CONNECTED)
+        {
+            Toast.makeText(this, R.string.not_connected, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (out != null)
+        {
+            mChatService.write(out);
+            mOutStringBuffer.setLength(0);
+            mOutEditText.setText(mOutStringBuffer);
+        }
+    }
+
+    //�����ı��༭��
+    private TextView.OnEditorActionListener mWriteListener = new TextView.OnEditorActionListener()
+    {
+        public boolean onEditorAction(TextView view, int actionId, KeyEvent event)
+        {
+            if (actionId == EditorInfo.IME_NULL && event.getAction() == KeyEvent.ACTION_UP)
+            {
+                String message = view.getText().toString();
+                sendMessage(message);
+            }
+            return true;
+        }
+    };
+    //handler:�������̷߳��͵����ݣ����ô�����������̸߳���UI
+    private final Handler mHandler = new Handler()
+    {
+        @Override
+        public void handleMessage(Message msg)
+        {
+            switch (msg.what)
+            {
+                case MESSAGE_STATE_CHANGE:
+                    switch (msg.arg1)
+                    {
+                        case BluetoothChatService.STATE_CONNECTED:
+                            mTitle.setText(R.string.title_connected_to);
+                            mTitle.append(mConnectedDeviceName);
+                            mConversationArrayAdapter.clear();
+                            break;
+                        case BluetoothChatService.STATE_CONNECTING:
+                            mTitle.setText(R.string.title_connecting);
+                            break;
+                        case BluetoothChatService.STATE_LISTEN:
+                        case BluetoothChatService.STATE_NONE:
+                            //mTitle.setText(R.string.title_not_connected);
+                            break;
+                    }
+                    break;
+                case MESSAGE_WRITE://д��Ϣ
+                    byte[] writeBuf = (byte[]) msg.obj;
+                    String writeMessage = new String(writeBuf);
+                    mConversationArrayAdapter.add("Me:  " + writeMessage);
+                    break;
+                case MESSAGE_READ://����Ϣ
+                    byte[] readBuf = (byte[]) msg.obj;
+                    String readMessage = new String(readBuf, 0, msg.arg1);
+                    mConversationArrayAdapter.add(mConnectedDeviceName + ":  "+ readMessage);
+                    break;
+                case MESSAGE_DEVICE_NAME:
+                    mConnectedDeviceName = msg.getData().getString(DEVICE_NAME);
+                    Toast.makeText(getApplicationContext(),"Connected to " + mConnectedDeviceName,
+                            Toast.LENGTH_SHORT).show();
+                    break;
+                case MESSAGE_TOAST:
+                    Toast.makeText(getApplicationContext(),msg.getData().getString(TOAST), Toast.LENGTH_SHORT).show();
+                    break;
+            }
+        }
+    };
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        switch (requestCode)
+        {
+            case REQUEST_CONNECT_DEVICE:
+                if (resultCode == Activity.RESULT_OK)
+                {
+                    String address = data.getExtras().getString(DeviceListActivity.EXTRA_DEVICE_ADDRESS);
+
+                    BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(address);
+                    mChatService.connect(device);
+                }
+                break;
+            case REQUEST_ENABLE_BT:
+                if (resultCode == Activity.RESULT_OK)
+                {
+                    setupChat();
+                }
+                else
+                {
+                    Toast.makeText(this, R.string.bt_not_enabled_leaving, Toast.LENGTH_SHORT).show();
+                    finish();
+                }
+        }
+    }
+
+
+    private void remote_ctrl()
+    {
+        if (mBluetoothAdapter.isEnabled())
+        {
+            up_button = (Button) findViewById(R.id.button_up);//���Ͱ�ť
+            up_button.setEnabled(true);
+            down_button = (Button) findViewById(R.id.button_down);//���Ͱ�ť
+            down_button.setEnabled(true);
+            right_button = (Button) findViewById(R.id.button_right);//���Ͱ�ť
+            right_button.setEnabled(true);
+            left_button = (Button) findViewById(R.id.button_left);//���Ͱ�ť
+            left_button.setEnabled(true);
+            stop_button = (Button) findViewById(R.id.button_stop);//���Ͱ�ť
+            stop_button.setEnabled(true);
+            fire_button = (Button) findViewById(R.id.button_fire);//���Ͱ�ť
+            fire_button.setEnabled(true);
+
+            byte[] out = {0x01};
+            sendCommand(out);
+        }
+    }
+
+    //���Եڶ���Ŀ��һ����������
+    private void auto_ctrl_1m()
+    {
+        if (mBluetoothAdapter.isEnabled())
+        {
+            byte[] out = {0x02};
+            sendCommand(out);
+        }
+    }
+
+    //���Ե�����Ŀ��������������
+    private void auto_ctrl_3m()
+    {
+        if (mBluetoothAdapter.isEnabled())
+        {
+            byte[] out = {0x03};
+            sendCommand(out);
+        }
+    }
+
+    //���Ե�����Ŀ��Խ�ϴ���
+    private void auto_avoid_obstacle()
+    {
+        if (mBluetoothAdapter.isEnabled())
+        {
+            byte[] out = {0x04};
+            sendCommand(out);
         }
     }
 

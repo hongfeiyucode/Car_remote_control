@@ -1,8 +1,8 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:gravity="center"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
@@ -13,27 +13,137 @@
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         android:elevation="4dp" />
 
-    <FrameLayout
-        android:layout_below="@id/toolbar"
-        android:id="@+id/frame_container"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
 
-        <TextView
-            android:id="@+id/txtLabel"
-            android:layout_gravity="center"
+        <Button
+            android:layout_width="160dp"
+            android:layout_height="wrap_content"
+            android:onClick="onClick_Enable_Bluetooth"
+            android:text="@string/connect" />
+
+        <Button
+            android:layout_width="160dp"
+            android:layout_height="wrap_content"
+            android:onClick="onClick_Disable_Bluetooth"
+            android:text="@string/close" />
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/in"
+        android:layout_width="fill_parent"
+        android:layout_height="287dp"
+        android:layout_weight="0.4"
+        android:stackFromBottom="true"
+        android:transcriptMode="alwaysScroll" />
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <!-- 输入信息 -->
+
+        <EditText
+            android:id="@+id/edit_text_out"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Test"
-            android:textSize="16sp" />
+            android:layout_gravity="bottom"
+            android:layout_weight="1" />
+        <!-- 发送信息 -->
 
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/fab"
+        <Button
+            android:id="@+id/button_send"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="right|bottom"
-            android:layout_margin="16dp"
-            android:src="@android:drawable/ic_dialog_email" />
-    </FrameLayout>
+            android:text="@string/send" />
+    </LinearLayout>
 
-</RelativeLayout>
+    <!-- 向上按钮，前进 -->
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal" >
+        <Button
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:enabled="false"
+            android:onClick="onClick_Up"
+            android:id="@+id/button_up"
+            android:text="@string/up" />
+    </LinearLayout>
+
+    <!-- 左、下、右按钮，下是后退 -->
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal" >
+
+        <Button
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:enabled="false"
+            android:onClick="onClick_Left"
+            android:id="@+id/button_left"
+            android:text="@string/left" />
+
+        <Button
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:enabled="false"
+            android:onClick="onClick_Down"
+            android:id="@+id/button_down"
+            android:text="@string/down" />
+
+        <Button
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:enabled="false"
+            android:onClick="onClick_Right"
+            android:id="@+id/button_right"
+            android:text="@string/right" />
+    </LinearLayout>
+
+    <!-- 停止按钮 -->
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/button_random"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/random" />
+
+        <Button
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:enabled="false"
+            android:onClick="onClick_Stop"
+            android:id="@+id/button_stop"
+            android:text="@string/stop" />
+        <Button
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:enabled="false"
+            android:onClick="onClick_Fire"
+            android:id="@+id/button_fire"
+            android:text="@string/fire" />
+    </LinearLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right|bottom"
+        android:src="@android:drawable/ic_dialog_email"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+</LinearLayout>
