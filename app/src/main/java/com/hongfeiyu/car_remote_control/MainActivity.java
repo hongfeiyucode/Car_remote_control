@@ -153,14 +153,14 @@ public class MainActivity extends AppCompatActivity {
                 .withGenerateMiniDrawer(true)
                 .withAccountHeader(headerResult) //set the AccountHeader we created earlier for the header
                 .addDrawerItems(
-                        new PrimaryDrawerItem().withName(R.string.drawer_item_first).withIcon(MaterialDesignIconic.Icon.gmi_car).withIdentifier(1),
+                        new PrimaryDrawerItem().withName(R.string.drawer_item_first).withDescription("右下为快捷方式").withIcon(MaterialDesignIconic.Icon.gmi_car).withIdentifier(1),
                         new PrimaryDrawerItem().withName(R.string.drawer_item_second).withIcon(MaterialDesignIconic.Icon.gmi_directions_run).withIdentifier(2),
-                        new PrimaryDrawerItem().withName(R.string.drawer_item_third).withIcon(FontAwesome.Icon.faw_gamepad).withIdentifier(3),
+                        new PrimaryDrawerItem().withName(R.string.drawer_item_third).withIcon(MaterialDesignIconic.Icon.gmi_truck).withIdentifier(3),
                         new PrimaryDrawerItem().withName(R.string.drawer_item_fourth).withIcon(MaterialDesignIconic.Icon.gmi_airplane).withIdentifier(4),
-                        new PrimaryDrawerItem().withName(R.string.drawer_item_fifth).withDescription("搜索附近设备前请打开手机的蓝牙").withIcon(MaterialDesignIconic.Icon.gmi_search).withIdentifier(5),
+                        new PrimaryDrawerItem().withName(R.string.drawer_item_fifth).withIcon(MaterialDesignIconic.Icon.gmi_search).withIdentifier(5),
                         new PrimaryDrawerItem().withName(R.string.drawer_item_sixth).withIcon(FontAwesome.Icon.faw_eye).withIdentifier(6),
                         new DividerDrawerItem(),
-                        new SecondaryDrawerItem().withName(R.string.drawer_item_seventh).withIcon(FontAwesome.Icon.faw_github).withIdentifier(7).withSelectable(false)
+                        new SecondaryDrawerItem().withName(R.string.drawer_item_seventh).withIcon(FontAwesome.Icon.faw_user_secret).withIdentifier(7).withSelectable(false)
                 ) // add the items we want to use with our Drawer
                 .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
                     @Override
@@ -311,7 +311,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void onClick_Enable_Bluetooth(View view)
     {
-        //������
+
         if (!mBluetoothAdapter.isEnabled())
         {
             Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
@@ -321,7 +321,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void onClick_Disable_Bluetooth(View view)
     {
-        //�ر�����
+
         mBluetoothAdapter.disable();
     }
 
@@ -489,7 +489,7 @@ public class MainActivity extends AppCompatActivity {
         if (mChatService != null)
             mChatService.stop();
     }
-    //�ɱ�����
+
     private void ensureDiscoverable()
     {
         if (mBluetoothAdapter.getScanMode() != BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE)
@@ -499,7 +499,7 @@ public class MainActivity extends AppCompatActivity {
             startActivity(discoverableIntent);
         }
     }
-    //������Ϣ
+
     private void sendMessage(String message)
     {
         if (mChatService.getState() != BluetoothChatService.STATE_CONNECTED)
@@ -517,7 +517,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    //������Ϣ
+
     private void sendCommand(byte[] out)
     {
         if (mChatService.getState() != BluetoothChatService.STATE_CONNECTED)
@@ -534,7 +534,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    //�����ı��༭��
+
     private TextView.OnEditorActionListener mWriteListener = new TextView.OnEditorActionListener()
     {
         public boolean onEditorAction(TextView view, int actionId, KeyEvent event)
@@ -547,7 +547,7 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
     };
-    //handler:�������̷߳��͵����ݣ����ô�����������̸߳���UI
+
     private final Handler mHandler = new Handler()
     {
         @Override

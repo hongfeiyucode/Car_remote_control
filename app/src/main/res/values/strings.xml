@@ -12,7 +12,7 @@
     <string name="drawer_item_fourth">越障触碰</string>
     <string name="drawer_item_fifth">查找蓝牙设备</string>
     <string name="drawer_item_sixth">可被发现</string>
-    <string name="drawer_item_seventh">Seventh item</string>
+    <string name="drawer_item_seventh">关于</string>
     <string name="drawer_item_eighth">Eighth item</string>
     <string name="drawer_item_ninth">Ninth item</string>
     <string name="drawer_item_tenth">Tenth item</string>
@@ -39,7 +39,7 @@
     <string name="title_other_devices">其他可利用的设备</string>
     <string name="button_scan">扫描蓝牙设备</string>
     <!-- Options Menu -->
-    <string name="connect">连接蓝牙设备</string>
+    <string name="connect">打开蓝牙</string>
     <string name="discoverable">可被发现</string>
     <string name="item1_remote_ctrl">1.遥控触碰</string>
     <string name="item2_auto_ctrl_1m">2.一米自主触碰</string>
@@ -50,7 +50,7 @@
     <string name="left">左</string>
     <string name="down">下</string>
     <string name="right">右</string>
-    <string name="stop">停止</string><string name="fire">发射</string>
+    <string name="stop">停止</string><string name="fire">发射键</string>
     <string name="random">随机数</string>
 
 
