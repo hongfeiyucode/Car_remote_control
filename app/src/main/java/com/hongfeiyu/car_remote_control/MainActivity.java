@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
     private static final int REQUEST_CONNECT_DEVICE = 1;
     private static final int REQUEST_ENABLE_BT = 2;
 
-    private TextView mTitle;
+    //  private TextView mTitle;
     private ListView mConversationView;
     private EditText mOutEditText;
     private Button mSendButton;
@@ -556,21 +556,7 @@ public class MainActivity extends AppCompatActivity {
             switch (msg.what)
             {
                 case MESSAGE_STATE_CHANGE:
-                    switch (msg.arg1)
-                    {
-                        case BluetoothChatService.STATE_CONNECTED:
-                            mTitle.setText(R.string.title_connected_to);
-                            mTitle.append(mConnectedDeviceName);
-                            mConversationArrayAdapter.clear();
-                            break;
-                        case BluetoothChatService.STATE_CONNECTING:
-                            mTitle.setText(R.string.title_connecting);
-                            break;
-                        case BluetoothChatService.STATE_LISTEN:
-                        case BluetoothChatService.STATE_NONE:
-                            //mTitle.setText(R.string.title_not_connected);
-                            break;
-                    }
+
                     break;
                 case MESSAGE_WRITE://д��Ϣ
                     byte[] writeBuf = (byte[]) msg.obj;

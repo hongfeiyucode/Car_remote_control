@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
@@ -22,6 +23,8 @@ import java.util.Set;
 
 public class DeviceListActivity extends Activity
 {
+	private static final String TAG = "DeviceListActivity";
+
 	public static String EXTRA_DEVICE_ADDRESS = "device_address";
 
 	private BluetoothAdapter mBtAdapter;
@@ -124,6 +127,7 @@ public class DeviceListActivity extends Activity
 			mBtAdapter.cancelDiscovery();
 
 			String info = ((TextView) v).getText().toString();
+			Log.d(TAG, info);
 			String address = info.substring(info.length() - 17);
 
 			Intent intent = new Intent();
