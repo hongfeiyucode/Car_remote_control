@@ -18,6 +18,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.Set;
 
@@ -128,7 +129,12 @@ public class DeviceListActivity extends Activity
 
 			String info = ((TextView) v).getText().toString();
 			Log.d(TAG, info);
-			String address = info.substring(info.length() - 17);
+			String address;
+			try{
+				address = info.substring(info.length() - 17);
+			}catch(Exception e){
+				return;
+			}
 
 			Intent intent = new Intent();
 			intent.putExtra(EXTRA_DEVICE_ADDRESS, address);

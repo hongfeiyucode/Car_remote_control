@@ -128,8 +128,8 @@ public class MainActivity extends AppCompatActivity {
 
         // Create a few sample profile
         // NOTE you have to define the loader logic too. See the CustomApplication for more details
-        final IProfile profile = new ProfileDrawerItem().withName("小车遥控器").withEmail("一言不合,开始飙车!").withIcon("http://7xq13x.com1.z0.glb.clouddn.com/conan.png");
-        final IProfile profile2 = new ProfileDrawerItem().withName("红绯鱼").withEmail("联系作者").withIcon("http://7xq13x.com1.z0.glb.clouddn.com/conan.png");
+        final IProfile profile = new ProfileDrawerItem().withName("小车遥控器").withEmail("一言不合,开始飙车!").withIcon(R.mipmap.ic_launcher);
+        final IProfile profile2 = new ProfileDrawerItem().withName("红绯鱼").withEmail("联系作者").withIcon(R.drawable.conan);
 
         // Create the AccountHeader
         headerResult = new AccountHeaderBuilder()
@@ -153,7 +153,7 @@ public class MainActivity extends AppCompatActivity {
                 .withGenerateMiniDrawer(true)
                 .withAccountHeader(headerResult) //set the AccountHeader we created earlier for the header
                 .addDrawerItems(
-                        new PrimaryDrawerItem().withName(R.string.drawer_item_first).withDescription("右下为快捷方式").withIcon(MaterialDesignIconic.Icon.gmi_car).withIdentifier(1),
+                        new PrimaryDrawerItem().withName(R.string.drawer_item_first).withDescription("右下角按钮为快捷方式").withIcon(MaterialDesignIconic.Icon.gmi_car).withIdentifier(1),
                         new PrimaryDrawerItem().withName(R.string.drawer_item_second).withIcon(MaterialDesignIconic.Icon.gmi_directions_run).withIdentifier(2),
                         new PrimaryDrawerItem().withName(R.string.drawer_item_third).withIcon(MaterialDesignIconic.Icon.gmi_truck).withIdentifier(3),
                         new PrimaryDrawerItem().withName(R.string.drawer_item_fourth).withIcon(MaterialDesignIconic.Icon.gmi_airplane).withIdentifier(4),
