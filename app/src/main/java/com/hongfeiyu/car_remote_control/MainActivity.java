@@ -99,6 +99,7 @@ public class MainActivity extends AppCompatActivity {
     Sensor sensor;
     // 定义各坐标轴上的重力加速度
     private float x, y, z;
+    boolean graisopen = true;
 
 
 
@@ -135,42 +136,45 @@ public class MainActivity extends AppCompatActivity {
         // 实例化一个监听器
         SensorEventListener lsn = new SensorEventListener() {
             // 实现接口的方法
+
             public void onSensorChanged(SensorEvent e) {
                 // 得到各轴上的重力加速度
                 x = e.values[SensorManager.DATA_X];
                 y = e.values[SensorManager.DATA_Y];
                 z = e.values[SensorManager.DATA_Z];
+                if(graisopen){
+                    // 在标题处显示出来
+                    setTitle("重力感应模式 X:" + (int)x + "," + "Y:" + (int)y + ","+ "Z:" + (int)z);
+                    //Toast.makeText(MainActivity.this, "X轴上的重力加速度为:" + x + "," + "Y轴上的重力加速度为:" + y + "," + "Z轴上的重力加速度为:" + z, Toast.LENGTH_SHORT).show();
 
-                // 在标题处显示出来
-                setTitle("X:" + (int)x + "," + "Y:" + (int)y + ","+ "Z:" + (int)z);
-                //Toast.makeText(MainActivity.this, "X轴上的重力加速度为:" + x + "," + "Y轴上的重力加速度为:" + y + "," + "Z轴上的重力加速度为:" + z, Toast.LENGTH_SHORT).show();
+                    if(z>5){
+                        //前
+                        out[0] = 'w';
+                        direction = 'w';
+                        sendCommand(out);
+                    }else if(z<-5){
+                        //后
+                        out[0] = 's';
+                        direction = 's';
+                        sendCommand(out);
+                    }else {
+                        //停
+                        sendCommand(out);
+                        out[0] = 't';
+                        sendCommand(out);
+                    }
 
-                if(z>5){
-                    //前
-                    out[0] = 'w';
-                    direction = 'w';
-                    sendCommand(out);
-                }else if(z<-5){
-                    //后
-                    out[0] = 's';
-                    direction = 's';
-                    sendCommand(out);
-                }else {
-                    //停
-                    sendCommand(out);
-                    out[0] = 't';
-                    sendCommand(out);
+                    if(x>6){
+                        //左
+                        out[0] = 'a';
+                        sendCommand(out);
+                    }else if(x<-6){
+                        //右
+                        out[0] = 'd';
+                        sendCommand(out);
+                    }
                 }
 
-                if(x>6){
-                    //左
-                    out[0] = 'a';
-                    sendCommand(out);
-                }else if(x<-6){
-                    //右
-                    out[0] = 'd';
-                    sendCommand(out);
-                }
             }
 
             public void onAccuracyChanged(Sensor s, int accuracy) {
@@ -187,6 +191,8 @@ public class MainActivity extends AppCompatActivity {
 //                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
 //                        .setAction("Action", null).show();
                 remote_ctrl();
+                graisopen = !graisopen;
+                setTitle("遥控触碰模式");
             }
         });
 
