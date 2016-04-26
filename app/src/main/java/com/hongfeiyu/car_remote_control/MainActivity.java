@@ -4,12 +4,14 @@ import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
-import android.net.Uri;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -25,8 +27,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.mikepenz.aboutlibraries.Libs;
-import com.mikepenz.aboutlibraries.LibsBuilder;
 import com.mikepenz.crossfadedrawerlayout.view.CrossfadeDrawerLayout;
 import com.mikepenz.fontawesome_typeface_library.FontAwesome;
 import com.mikepenz.material_design_iconic_typeface_library.MaterialDesignIconic;
@@ -92,6 +92,16 @@ public class MainActivity extends AppCompatActivity {
     private BluetoothChatService mChatService = null;
 
 
+    //gravity
+    // 感应器管理器
+    private SensorManager sensorMgr;
+    // 得到加速感应器
+    Sensor sensor;
+    // 定义各坐标轴上的重力加速度
+    private float x, y, z;
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -114,6 +124,61 @@ public class MainActivity extends AppCompatActivity {
             finish();
             return;
         }
+
+        //gravity
+        // 得到当前手机传感器管理对象
+        sensorMgr = (SensorManager) getSystemService(SENSOR_SERVICE);
+
+        // 加速重力感应对象
+        sensor = sensorMgr.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+
+        // 实例化一个监听器
+        SensorEventListener lsn = new SensorEventListener() {
+            // 实现接口的方法
+            public void onSensorChanged(SensorEvent e) {
+                // 得到各轴上的重力加速度
+                x = e.values[SensorManager.DATA_X];
+                y = e.values[SensorManager.DATA_Y];
+                z = e.values[SensorManager.DATA_Z];
+
+                // 在标题处显示出来
+                setTitle("X:" + (int)x + "," + "Y:" + (int)y + ","+ "Z:" + (int)z);
+                //Toast.makeText(MainActivity.this, "X轴上的重力加速度为:" + x + "," + "Y轴上的重力加速度为:" + y + "," + "Z轴上的重力加速度为:" + z, Toast.LENGTH_SHORT).show();
+
+                if(z>5){
+                    //前
+                    out[0] = 'w';
+                    direction = 'w';
+                    sendCommand(out);
+                }else if(z<-5){
+                    //后
+                    out[0] = 's';
+                    direction = 's';
+                    sendCommand(out);
+                }else {
+                    //停
+                    sendCommand(out);
+                    out[0] = 't';
+                    sendCommand(out);
+                }
+
+                if(x>6){
+                    //左
+                    out[0] = 'a';
+                    sendCommand(out);
+                }else if(x<-6){
+                    //右
+                    out[0] = 'd';
+                    sendCommand(out);
+                }
+            }
+
+            public void onAccuracyChanged(Sensor s, int accuracy) {
+            }
+        };
+        // 注册listener，第三个参数是检测的精确度
+        sensorMgr.registerListener(lsn, sensor, SensorManager.SENSOR_DELAY_GAME);
+
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -629,7 +694,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    //���Եڶ���Ŀ��һ����������
+
     private void auto_ctrl_1m()
     {
         if (mBluetoothAdapter.isEnabled())
@@ -639,7 +704,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    //���Ե�����Ŀ��������������
+
     private void auto_ctrl_3m()
     {
         if (mBluetoothAdapter.isEnabled())
@@ -649,7 +714,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    //���Ե�����Ŀ��Խ�ϴ���
+
     private void auto_avoid_obstacle()
     {
         if (mBluetoothAdapter.isEnabled())
@@ -658,5 +723,7 @@ public class MainActivity extends AppCompatActivity {
             sendCommand(out);
         }
     }
+
+
 
 }
