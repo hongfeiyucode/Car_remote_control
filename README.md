@@ -1,4 +1,11 @@
-# 手机通过蓝牙能够控制小车行驶
+# 手机通过蓝牙能够控制小车行驶并支持重力感应
+
+重力感应与键盘操作可以互相切换
+
+![](https://github.com/hongfeiyucode/Car_remote_control/blob/master/pic%2F%E9%87%8D%E5%8A%9B%E6%84%9F%E5%BA%94%E9%81%A5%E6%8E%A7%E5%B0%8F%E8%BD%A6.gif)
+效果演示
+
+
 版本号：2016.1.3
 （寄存器版本，适合探索者STM32F4开发板）扩展实验1 
 ATK-HC05蓝牙串口模块实验-v1
