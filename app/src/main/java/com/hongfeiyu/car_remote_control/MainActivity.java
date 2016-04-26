@@ -142,7 +142,7 @@ public class MainActivity extends AppCompatActivity {
                 x = e.values[SensorManager.DATA_X];
                 y = e.values[SensorManager.DATA_Y];
                 z = e.values[SensorManager.DATA_Z];
-                if(graisopen){
+                if(graisopen&&mChatService!= null){
                     // 在标题处显示出来
                     setTitle("重力感应模式 X:" + (int)x + "," + "Y:" + (int)y + ","+ "Z:" + (int)z);
                     //Toast.makeText(MainActivity.this, "X轴上的重力加速度为:" + x + "," + "Y轴上的重力加速度为:" + y + "," + "Z轴上的重力加速度为:" + z, Toast.LENGTH_SHORT).show();
