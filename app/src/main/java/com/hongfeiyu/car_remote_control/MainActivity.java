@@ -99,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
     Sensor sensor;
     // 定义各坐标轴上的重力加速度
     private float x, y, z;
-    boolean graisopen = true;
+    boolean graisopen = false;
 
 
 
@@ -224,7 +224,7 @@ public class MainActivity extends AppCompatActivity {
                 .withGenerateMiniDrawer(true)
                 .withAccountHeader(headerResult) //set the AccountHeader we created earlier for the header
                 .addDrawerItems(
-                        new PrimaryDrawerItem().withName(R.string.drawer_item_first).withDescription("右下角按钮切换两种模式").withIcon(MaterialDesignIconic.Icon.gmi_car).withIdentifier(1),
+                        new PrimaryDrawerItem().withName(R.string.drawer_item_first).withDescription("右下按钮开启重力感应").withIcon(MaterialDesignIconic.Icon.gmi_car).withIdentifier(1),
                         new PrimaryDrawerItem().withName(R.string.drawer_item_second).withIcon(MaterialDesignIconic.Icon.gmi_directions_run).withIdentifier(2),
                         new PrimaryDrawerItem().withName(R.string.drawer_item_third).withIcon(MaterialDesignIconic.Icon.gmi_truck).withIdentifier(3),
                         new PrimaryDrawerItem().withName(R.string.drawer_item_fourth).withIcon(MaterialDesignIconic.Icon.gmi_airplane).withIdentifier(4),
