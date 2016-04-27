@@ -199,8 +199,8 @@ public class MainActivity extends AppCompatActivity {
 
         // Create a few sample profile
         // NOTE you have to define the loader logic too. See the CustomApplication for more details
-        final IProfile profile = new ProfileDrawerItem().withName("小车遥控器").withEmail("一言不合,开始飙车!").withIcon(R.mipmap.ic_launcher);
-        final IProfile profile2 = new ProfileDrawerItem().withName("红绯鱼").withEmail("联系作者").withIcon(R.drawable.conan);
+        final IProfile profile = new ProfileDrawerItem().withName("小车遥控器").withEmail("https://github.com/hongfeiyucode").withIcon(R.mipmap.ic_launcher);
+        final IProfile profile2 = new ProfileDrawerItem().withName("红绯鱼").withEmail("https://github.com/hongfeiyucode").withIcon(R.drawable.conan);
 
         // Create the AccountHeader
         headerResult = new AccountHeaderBuilder()
