@@ -1,6 +1,18 @@
 # STM32 手机 蓝牙遥控 循迹 寻光 重力感应小车
  
  ---
+## 遥控效果慢放N倍
+
+![zlgy](https://github.com/hongfeiyucode/Car_remote_control/blob/master/pic/%E9%87%8D%E5%8A%9B%E6%84%9F%E5%BA%94%E9%81%A5%E6%8E%A7%E5%B0%8F%E8%BD%A6.gif)
+
+GIF演示
+
+ 重力感应遥控说明：
+
+- 将手机树立起来时小车是停止状态 
+- 想象手机是一个遥杆
+- 往前倾（手机上端远离自己）是向前，往后是后退
+- 左右倾斜分别是向左转向右转
 
 ## Android遥控程序
 
@@ -30,16 +42,6 @@
 
 ![app-4](https://github.com/hongfeiyucode/Car_remote_control/blob/master/pic/carremcon-4.jpg)
 
-![zlgy](https://github.com/hongfeiyucode/Car_remote_control/blob/master/pic/%E9%87%8D%E5%8A%9B%E6%84%9F%E5%BA%94%E9%81%A5%E6%8E%A7%E5%B0%8F%E8%BD%A6.gif)
-
-GIF演示
-
- 重力感应遥控说明：
-
-- 将手机树立起来时小车是停止状态 
-- 想象手机是一个遥杆
-- 往前倾（手机上端远离自己）是向前，往后是后退
-- 左右倾斜分别是向左转向右转
 
 
 ---
