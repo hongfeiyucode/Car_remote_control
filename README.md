@@ -1,5 +1,7 @@
 # STM32 手机 蓝牙遥控 循迹 寻光 重力感应小车
  
+ 
+[![](https://github.com/hongfeiyucode/Car_remote_control/blob/master/app/src/main/res/mipmap-hdpi/ic_launcher.png)](https://github.com/hongfeiyucode/Car_remote_control)
  ---
 ## 遥控效果慢放N倍
 
